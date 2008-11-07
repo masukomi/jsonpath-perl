@@ -167,4 +167,30 @@ sub test_array_retreival(){
 
 }
 
+sub test_path_operations(){
+	my $self = shift;
+	my $jp = JSONPath->new();
+	my $raw_result = undef;
+	my @result = undef;
+
+	$raw_result = $jp->run(\%test_structure, '$..author', {'result_type' => 'PATH'});
+	$self->assert($raw_result != 0);
+	@result = @{$raw_result};
+	$self->assert_equals(3, $#result);
+
+	$self->assert_equals("\$['store']['book'][0]['author']", $result[0]);
+	$self->assert_equals("\$['store']['book'][1]['author']", $result[1]);
+	$self->assert_equals("\$['store']['book'][2]['author']", $result[2]);
+	$self->assert_equals("\$['store']['book'][3]['author']", $result[3]);
+
+
+	$raw_result = $jp->run(\%test_structure, '$.store.!', {'result_type' => 'PATH'});
+	$self->assert($raw_result != 0);
+	@result = @{$raw_result};
+	$self->assert_equals(1, $#result);
+
+	$self->assert_equals("\$['store']", $result[0]);
+	$self->assert_equals("\$['store']", $result[1]);
+}
+
 return 1;

@@ -109,8 +109,14 @@ sub as_path(){
 	my @x = split(/;/, $path);
 	my $p = '$';
 	#the JS and PHP versions of this are totally whack
-	foreach my $piece (@x){
-		$p .= "[$x[$piece]]";
+	#foreach my $piece (@x){
+	for(my $i =1; $i <= $#x; $i++){
+		my $piece = $x[$i];
+		if ($piece =~ m/^\d+$/){
+			$p .= "[$piece]";
+		} else {
+			$p .= "['$piece']";
+		}
 	}
 	return $p;
 }

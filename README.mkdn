@@ -16,7 +16,7 @@ or the bracket notation
 
 	$['store']['book'][0]['title']
 
-for input pathes. Internal or output pathes will always be converted to the more general bracketâ€“notation.
+for input pathes. Internal or output pathes will always be converted to the more general bracket notation.
 
 JSONPath allows the wildcard symbol * for member names and array indices. It borrows the descendant operator '..' from E4X and the array slice syntax proposal [start:end:step] from ECMASCRIPT 4.
 
@@ -135,7 +135,7 @@ the example results in the following arrays:
 
 	]
 
-	res2 (CURRENTLY BROKEN IN THE PERL VERSION):
+	res2:
 	[ "$['store']['book'][0]['author']",
 	  "$['store']['book'][1]['author']",
 	  "$['store']['book'][2]['author']",
@@ -146,7 +146,6 @@ Please note, that the return value of jsonPath is an array, which is also a vali
  
 Issues
 
-* PATH option doesn't produce useful results
 * Currently only single quotes allowed inside of JSONPath expressions.
 * Script expressions inside of JSONPath locations are currently not recursively evaluated by jsonPath. Only the global $ and local @ symbols are expanded by a simple regular expression.
 * An alternative for jsonPath to return false in case of no match may be to return an empty array in future.
