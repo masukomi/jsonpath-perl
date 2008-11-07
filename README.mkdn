@@ -29,6 +29,7 @@ using the symbol '@' for the current object. Filter expressions are supported vi
 	$.store.book[?(@.price < 10)].title
 
 Here is a complete overview and a side by side comparison of the JSONPath syntax elements with its XPath counterparts.
+
 <table><tr class="evn"><td> <strong>XPath</strong> </td><td> <strong>JSONPath</strong> </td><td> <strong>Result</strong> </td></tr>
 <tr class="odd"><td class="lft"><code>/store/book/author</code> </td><td class="lft"><code>$.store.book[*].author</code> </td><td class="lft">the authors of all books in the store </td></tr>
 <tr class="evn"><td class="lft"><code>//author</code> </td><td class="lft"><code>$..author</code> </td><td class="lft">all authors </td></tr>
