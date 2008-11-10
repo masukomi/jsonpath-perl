@@ -93,7 +93,9 @@ sub normalize (){
 	my $self = shift;
 	my $x = shift;
 	$x =~ s/"\/[\['](\??\(.*?\))[\]']\/"/&_callback_01($1)/eg;
-	$x =~ s/'?(?<!@)\.'?|\['?/;/g; #added the negative lookbehind -krhodes
+	$x =~ s/'?(?<!@|\d)\.'?|\['?/;/g; 	#added the negative lookbehind -krhodes
+										# added \d in it to compensate when 
+										# comparinig against decimal numbers
 	$x =~ s/;;;|;;/;..;/g;
 	$x =~ s/;$|'?\]|'$//g;
 	$x =~ s/#([0-9]+)/&_callback_02($1)/eg;
@@ -107,7 +109,7 @@ sub as_path(){
 	my $path = shift;
 	
 	my @x = split(/;/, $path);
-	my $p = '$';
+	my $p = '';
 	#the JS and PHP versions of this are totally whack
 	#foreach my $piece (@x){
 	for(my $i =1; $i <= $#x; $i++){
@@ -115,7 +117,7 @@ sub as_path(){
 		if ($piece =~ m/^\d+$/){
 			$p .= "[$piece]";
 		} else {
-			$p .= "['$piece']";
+			$p .= "[\"$piece\"]";
 		}
 	}
 	return $p;
@@ -258,11 +260,31 @@ sub evalx(){
 	#x: @.isbn
 	#needs to convert to 
 	#exists $obj->{'isbn'}
-	if ($loc =~ m/$@\.[a-zA-Z0-9_-]*$/){
+	
+	if ($loc =~ m/^@\.[a-zA-Z0-9_-]*$/){
+		#$self->logit( "existence test ");
 		$loc =~ s/@\.([a-zA-Z0-9_-]*)$/exists \$obj->{'$1'}/;
 	} else { # it's a comparis on some sort?
 		$loc =~ s/@\.([a-zA-Z0-9_-]*)(.*)/\$obj->{'$1'}$2/;
 		$loc =~ s/(?<!=)(=)(?!=)/==/; #convert single equals to double
+		if ($loc =~ m/\s*(!|=)=['"](.*?)['"]/){
+			$loc =~ s/\s*==['"](.*?)['"]/ eq "$1"/;
+			$loc =~ s/\s*!=['"](.*?)['"]/ ne "$1"/;
+			my $string_match = 0;
+			if ($loc =~ m/ (eq|ne) /){ #dunno if those replacements happened...
+				$string_match =1;
+			}	
+			#$self->logit( "comparison test of  $1 and $2 ::loc:: $loc");
+			my $obj_type = ref($obj);
+			if ($obj_type ne 'HASH' and $obj_type ne 'ARRAY' and $obj){
+				if (! $string_match){
+					$loc =~s/\$obj->{(.*?)}(.*)/$obj $2/;
+				} else {
+					$loc =~s/\$obj->{(.*?)}(.*)/"$obj" $2/;
+				}
+				return ($obj and $loc and eval($loc)) ? 1 : 0;
+			}
+		}
 	}
 	#print STDERR "loc: $loc\n";
 	return ($obj and $loc and eval($loc)) ? 1 : 0;
@@ -341,13 +363,13 @@ sub _callback_06(){
 	}
 }
 
-#my $log_count = 1;
-#sub logit(){
-#	my $self = shift;
-#	my $message = shift;
-#	print STDERR "$log_count) $message\n";
-#	$log_count++;
-#}
+my $log_count = 1;
+sub logit(){
+	my $self = shift;
+	my $message = shift;
+	print STDERR "$log_count) $message\n";
+	$log_count++;
+}
 
 return 1;
 
