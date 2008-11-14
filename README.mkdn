@@ -28,33 +28,15 @@ using the symbol '@' for the current object. Filter expressions are supported vi
 
 	$.store.book[?(@.price < 10)].title
 
-Here is a complete overview and a side by side comparison of the JSONPath syntax elements with its XPath counterparts.
-
-<table><tr class="evn"><td> <strong>XPath</strong> </td><td> <strong>JSONPath</strong> </td><td> <strong>Result</strong> </td></tr>
-<tr class="odd"><td class="lft"><code>/store/book/author</code> </td><td class="lft"><code>$.store.book[*].author</code> </td><td class="lft">the authors of all books in the store </td></tr>
-<tr class="evn"><td class="lft"><code>//author</code> </td><td class="lft"><code>$..author</code> </td><td class="lft">all authors </td></tr>
-<tr class="odd"><td class="lft"><code>/store/*</code> </td><td class="lft"><code>$.store.*</code> </td><td class="lft">all things in store, which are some books and a red bicycle. </td></tr>
-<tr class="evn"><td class="lft"><code>/store//price</code> </td><td class="lft"><code>$.store..price</code> </td><td class="lft">the price of everything in the store. </td></tr>
-<tr class="odd"><td class="lft"><code>//book[3]</code> </td><td class="lft"><code>$..book[2]</code> </td><td class="lft">the third book </td></tr>
-<tr class="evn"><td class="lft"><code>//book[last()]</code> </td><td class="lft"><code>$..book[(@.length-1)]</code><br>
-<code>$..book[-1:]</code> </td><td class="lft">the last book in order. </td></tr>
-<tr class="odd"><td class="lft"><code>//book[position()&lt;3]</code> </td><td class="lft"><code>$..book[0,1]</code><br>
-<code>$..book[:2]</code> </td><td class="lft">the first two books </td></tr>
-<tr class="evn"><td class="lft"><code>//book[isbn]</code> </td><td class="lft"><code>$..book[?(@.isbn)]</code> </td><td class="lft">filter all books with isbn number </td></tr>
-<tr class="odd"><td class="lft"><code>//book[price&lt;10]</code> </td><td class="lft"><code>$..book[?(@.price&lt;10)]</code> </td><td class="lft">filter all books cheapier than 10 </td></tr>
-<tr class="evn"><td class="lft"><code>//*</code> </td><td class="lft"><code>$..*</code> </td><td class="lft">all Elements in XML document. All members of JSON structure. </td></tr>
-<tr class="odd"><td class="lft"><code>???</code> </td><td class="lft"><code>$.store.!</code> </td><td class="lft">all the keys in the store hash (bicycle, book)</td></tr>
-</table>
-
-XPath has a lot more to offer (Location pathes in not abbreviated syntax, operators and functions) than listed here. Moreover there is a remarkable difference how the subscript operator works in Xpath and JSONPath.
+XPath has a lot more to offer (Location paths in not abbreviated syntax, operators and functions) than listed here. Moreover there is a remarkable difference how the subscript operator works in Xpath and JSONPath.
 
     * Square brackets in XPath expressions always operate on the node set resulting from the previous path fragment. Indices always start by 1.
     * With JSONPath square brackets operate on the object or array addressed by the previous path fragment. Indices always start by 0. 
 
  
-[edit] [comment] [remove] |2007-08-18| e3 # JSONPath examples
+# JSONPath examples
 
-Let's practice JSONPath expressions by some more examples. We start with a simple JSON structure built after an XML example representing a bookstore (original XML file).
+Let's practice JSONPath expressions by some more examples. We start with a simple JSON structure built after an XML example representing a bookstore.
 
 	{ "store": {
 		"book": [ 
@@ -88,22 +70,27 @@ Let's practice JSONPath expressions by some more examples. We start with a simpl
 	  }
 	}
 
+Here are examples of all the types of JSONPath expressions you could perform on this and what you should expect to see as a result. We've also included the comparable XPath expressions.
 
-<table><tbody><tr class="evn"><td> <strong>XPath</strong> </td><td> <strong>JSONPath</strong> </td><td> <strong>Result</strong> </td></tr>
-<tr class="odd"><td class="lft"><code>/store/book/author</code> </td><td class="lft"><code>$.store.book[*].author</code> </td><td class="lft">the authors of all books in the store </td></tr>
-<tr class="evn"><td class="lft"><code>//author</code> </td><td class="lft"><code>$..author</code> </td><td class="lft">all authors </td></tr>
-<tr class="odd"><td class="lft"><code>/store/*</code> </td><td class="lft"><code>$.store.*</code> </td><td class="lft">all things in store, which are some books and a red bicycle. </td></tr>
-<tr class="evn"><td class="lft"><code>/store//price</code> </td><td class="lft"><code>$.store..price</code> </td><td class="lft">the price of everything in the store. </td></tr>
-<tr class="odd"><td class="lft"><code>//book[3]</code> </td><td class="lft"><code>$..book[2]</code> </td><td class="lft">the third book </td></tr>
-<tr class="evn"><td class="lft"><code>//book[last()]</code> </td><td class="lft"><code>$..book[(@.length-1)]</code><br>
-<code>$..book[-1:]</code> </td><td class="lft">the last book in order. </td></tr>
-<tr class="odd"><td class="lft"><code>//book[position()&lt;3]</code> </td><td class="lft"><code>$..book[0,1]</code><br>
-<code>$..book[:2]</code> </td><td class="lft">the first two books </td></tr>
-<tr class="evn"><td class="lft"><code>//book[isbn]</code> </td><td class="lft"><code>$..book[?(@.isbn)]</code> </td><td class="lft">filter all books with isbn number </td></tr>
-<tr class="odd"><td class="lft"><code>//book[price&lt;10]</code> </td><td class="lft"><code>$..book[?(@.price&lt;10)]</code> </td><td class="lft">filter all books cheapier than 10 </td></tr>
-<tr class="evn"><td class="lft"><code>//*</code> </td><td class="lft"><code>$..*</code> </td><td class="lft">all Elements in XML document. All members of JSON structure. </td></tr>
-<tr class="odd"><td class="lft"><code>???</code> </td><td class="lft"><code>$.store.!</code> </td><td class="lft">all the keys in the store hash (bicycle, book)</td></tr>
-</tbody></table>
+    XPath               JSONPath                Result
+    /store/book/author   $.store.book[*].author  the authors of all books in the store
+    //author             $..author               all authors
+    /store/*             $.store.*               all things in store, which are some books and a red bicycle.
+    /store//price        $.store..price          the price of everything in the store.
+    //book[3]            $..book[2]              the third book
+    //book[last()]       $..book[(@.length-1)]
+    //book[position()<3] $..book[-1:]            the last book in order.
+                         $..book[0,1]
+                         $..book[:2]             the first two books
+    //book[isbn]         $..book[?(@.isbn)]      filter all books with isbn number
+    //book[price<10]     $..book[?(@.price<10)]  filter all books cheapier than 10
+    //*                  $..*                    all Elements in XML document. All members of JSON structure.
+    ???                  $.store.!               all the keys in the store hash (bicycle, book)
+                         $..book[?(@.ratings><'good')]
+                                                all the books with a ratings element that contains the word "good"
+                                                This could be a key in a hash, an item in an array,
+                                                or a substring of a string.
+
 
 ## JSONPath implementation
 

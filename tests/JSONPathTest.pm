@@ -5,36 +5,52 @@ use JSON;
 use JSONPath;
 use base qw(Test::Unit::TestCase);
 
-my %test_structure =("store" => {
-    "book" => [ 
-      { "category" => "reference",
-        "author" => "Nigel Rees",
-        "title" => "Sayings of the Century",
-        "price" => 8.95
-      },
-      { "category" => "fiction",
-        "author" => "Evelyn Waugh",
-        "title" => "Sword of Honour",
-        "price" => 12.99
-      },
-      { "category" => "fiction",
-        "author" => "Herman Melville",
-        "title" => "Moby Dick",
-        "isbn" => "0-553-21311-3",
-        "price" => 8.99
-      },
-      { "category" => "fiction",
-        "author" => "J. R. R. Tolkien",
-        "title" => "The Lord of the Rings",
-        "isbn" => "0-395-19395-8",
-        "price" => 22.99
-      }
-    ] ,
-    "bicycle" => {
-     "color" => "red",
-     "price" => 19.95
-    }
-  }
+my %test_structure =(
+	"store"=> {
+		"book"=> [ 
+			{
+				"category"=> "reference",
+				"author"=> "Nigel Rees",
+				"title"=> "Sayings of the Century",
+				"price"=> 8.95,
+				"ratings"=> [
+					1,
+					3,
+					2,
+					10
+				]
+			},
+			{ 
+				"category"=> "fiction",
+				"author"=> "Evelyn Waugh",
+				"title"=> "Sword of Honour",
+				"price"=> 12.99,
+				"ratings" => [
+						"good",
+						"bad",
+						"lovely"
+					]
+			},
+			{
+				"category"=> "fiction",
+				"author"=> "Herman Melville",
+				"title"=> "Moby Dick",
+				"isbn"=> "0-553-21311-3",
+				"price"=> 8.99
+			},
+			{
+				"category"=> "fiction",
+				"author"=> "J. R. R. Tolkien",
+				"title"=> "The Lord of the Rings",
+				"isbn"=> "0-395-19395-8",
+				"price"=> 22.99
+			}
+		],
+		"bicycle"=> {
+			"color"=> "red",
+			"price"=> 19.95
+		}
+	}
 );
 
 
@@ -137,16 +153,23 @@ sub test_array_retreival(){
 	}
 	
 	
-	$raw_result = $jp->run(\%test_structure, '$..book[0,1]'); #the price of everything
+	$raw_result = $jp->run(\%test_structure, '$..book[0,1]'); # the first two books
 	$self->assert($raw_result != 0);
 	@result = @{$raw_result};
 	$self->assert_equals(1, $#result);
 
 
-	$raw_result = $jp->run(\%test_structure, '$..book[:2]'); #the price of everything
+	$raw_result = $jp->run(\%test_structure, '$..book[:2]'); # the first two books
 	$self->assert($raw_result != 0);
 	@result = @{$raw_result};
 	$self->assert_equals(1, $#result);
+
+	$raw_result = $jp->run(\%test_structure, '$..book[-1:]'); # the last book
+	$self->assert($raw_result != 0);
+	@result = @{$raw_result};
+	$self->assert_equals(0, $#result);
+
+
 
 	$raw_result = $jp->run(\%test_structure, '$..book[?(@.isbn)]'); #the price of everything
 	$self->assert($raw_result != 0);
@@ -179,10 +202,10 @@ sub test_path_operations(){
 	@result = @{$raw_result};
 	$self->assert_equals(3, $#result);
 
-	$self->assert_equals("\$['store']['book'][0]['author']", $result[0]);
-	$self->assert_equals("\$['store']['book'][1]['author']", $result[1]);
-	$self->assert_equals("\$['store']['book'][2]['author']", $result[2]);
-	$self->assert_equals("\$['store']['book'][3]['author']", $result[3]);
+	$self->assert_equals("[\"store\"][\"book\"][0][\"author\"]", $result[0]);
+	$self->assert_equals("[\"store\"][\"book\"][1][\"author\"]", $result[1]);
+	$self->assert_equals("[\"store\"][\"book\"][2][\"author\"]", $result[2]);
+	$self->assert_equals("[\"store\"][\"book\"][3][\"author\"]", $result[3]);
 
 
 	$raw_result = $jp->run(\%test_structure, '$.store.!', {'result_type' => 'PATH'});
@@ -190,8 +213,69 @@ sub test_path_operations(){
 	@result = @{$raw_result};
 	$self->assert_equals(1, $#result);
 
-	$self->assert_equals("\$['store']", $result[0]);
-	$self->assert_equals("\$['store']", $result[1]);
+	$self->assert_equals("[\"store\"]", $result[0]);
+	$self->assert_equals("[\"store\"]", $result[1]);
 }
 
+sub test_includes_test(){
+	my $self = shift;
+	my $jp = JSONPath->new();
+	my $raw_result = undef;
+	my @result = undef;
+
+	$raw_result = $jp->run(\%test_structure, "\$..book[?(@.ratings><'good')]");
+		#[
+		#   {
+		#      "ratings" : [
+		#         "good",
+		#         "bad",
+		#         "lovely"
+		#      ],
+		#      "category" : "fiction",
+		#      "author" : "Evelyn Waugh",
+		#      "title" : "Sword of Honour",
+		#      "price" : 12.99
+		#   }
+		#]
+	$self->assert($raw_result != 0);
+	@result = @{$raw_result};
+	$self->assert_equals(0, $#result);
+	$raw_result = $jp->run(\%test_structure, "\$..ratings[?(@.><'good')]");
+		#[
+		#   [
+		#      "good",
+		#      "bad",
+		#      "lovely"
+		#   ]
+		#]
+	$self->assert($raw_result != 0);
+	@result = @{$raw_result};
+	$self->assert_equals(0, $#result);
+	$self->assert_equals('bad', $result[0][1]);
+
+
+	$raw_result = $jp->run(\%test_structure, "\$..book[?(@.ratings><3)]");
+		#[
+		#   {
+		#      "ratings" : [
+		#         1,
+		#         3,
+		#         2,
+		#         10
+		#      ],
+		#      "category" : "reference",
+		#      "author" : "Nigel Rees",
+		#      "title" : "Sayings of the Century",
+		#      "price" : 8.95
+		#   }
+		#]
+	$self->assert($raw_result != 0);
+	@result = @{$raw_result};
+	$self->assert_equals(0, $#result);
+	$self->assert_equals('reference', $result[0]{'category'});
+	$self->assert_equals('ARRAY', ref $result[0]{'ratings'});
+	$self->assert_equals(2, $result[0]{'ratings'}[2]);
+#
+#
+}
 return 1;
