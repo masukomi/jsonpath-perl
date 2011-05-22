@@ -164,7 +164,7 @@ sub trace(){
 		if (! $reserved_loc and  $ref_type eq 'HASH' and ($obj and exists $obj->{$loc}) ){ 
 			#$self->logit( "tracing loc($loc) obj (hash)?");
 			$self->trace($x_string, $obj->{$loc}, $path . ';' . $loc);
-		} elsif (! $reserved_loc and $ref_type eq 'ARRAY' and ($loc =~ m/^\d+$/ and  $#{$obj} >= $loc and defined $obj->[$loc])   ) {
+		} elsif (! $reserved_loc and $ref_type eq 'ARRAY' and ($loc =~ m/^\d+$/ and  $#{$obj} >= $loc and $obj->[$loc] != undef)   ) {
 			$self->trace($x_string, $obj->[$loc], $path . ';' . $loc);
 			
 		} elsif ($loc eq '*'){
