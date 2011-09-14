@@ -67,6 +67,8 @@ sub test_normalize(){
 	$self->assert_equals('$;..;author', $normalized);
 	$normalized = $jp->normalize('$.store.book[*].author');
 	$self->assert_equals('$;store;book;*;author', $normalized);
+	$normalized = $jp->normalize('$.store.book[*]');
+	$self->assert_equals('$;store;book;*', $normalized);
 	$normalized = $jp->normalize('$.store.*');
 	$self->assert_equals('$;store;*', $normalized);
 	$normalized = $jp->normalize('$..book[2]');
@@ -96,6 +98,16 @@ sub test_array_retreival(){
 	my @result = undef;
 
 	$raw_result = $jp->run(\%test_structure, '$.store.book[*].author');
+	$self->assert($raw_result != 0);
+	@result = @{$raw_result};
+	$self->assert_equals(3, $#result);
+
+	$raw_result = $jp->run(\%test_structure, '$.store.book[*]');
+	$self->assert($raw_result != 0);
+	@result = @{$raw_result};
+	$self->assert_equals(3, $#result);
+
+	$raw_result = $jp->run(\%test_structure, '$.store.book.*');
 	$self->assert($raw_result != 0);
 	@result = @{$raw_result};
 	$self->assert_equals(3, $#result);
