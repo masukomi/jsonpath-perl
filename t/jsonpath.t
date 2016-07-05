@@ -193,20 +193,7 @@ subtest includes_test => sub {
     isnt( $raw_result, 0 );
     @result = @{$raw_result};
     is( $#result, 0 );
-    $raw_result = $jp->run( \%test_structure, "\$..ratings[?(@.><'good')]" );
-
-    #[
-    #   [
-    #      "good",
-    #      "bad",
-    #      "lovely"
-    #   ]
-    #]
-    isnt( $raw_result, 0 );
-    @result = @{$raw_result};
-    is( $#result,      0 );
-    is( $result[0][1], 'bad' );
-
+    
     $raw_result = $jp->run( \%test_structure, "\$..book[?(@.ratings><3)]" );
 
     #[
