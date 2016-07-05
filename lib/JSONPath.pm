@@ -2,6 +2,8 @@
 
 use strict;
 use warnings;
+package JSONPath;
+
 # ABSTRACT:	 A port of the JavaScript and PHP versions of JSONPath L<http://goessner.net/articles/JsonPath/>
 
 # VERSION
@@ -32,7 +34,6 @@ use warnings;
 #	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 #	OTHER DEALINGS IN THE SOFTWARE.
 
-package JSONPath;
 use JSON::MaybeXS;
 use Log::Any qw($log);
 use Scalar::Util qw(looks_like_number);
