@@ -83,7 +83,7 @@ sub run {
     if ( $expr and $obj and ( $self->{'result_type'} eq 'VALUE' || $self->{'result_type'} eq 'PATH' ) ) {
         my $cleaned_expr = $self->normalize($expr);
         $cleaned_expr =~ s/^\$;//;
-        $self->trace( $cleaned_expr, $obj, '$' );
+         $self->trace( $cleaned_expr, $obj, '$' );
         my @result = @{ $self->{'result'} };
 
         #print STDERR " ending. result = @result\n";
@@ -190,7 +190,7 @@ sub trace {
         }
         elsif (!$reserved_loc
             and $ref_type eq 'ARRAY'
-            and ( $loc =~ m/^\d+$/ and $#{$obj} >= $loc and $obj->[$loc] != undef ) )
+            and ( $loc =~ m/^\d+$/ and $#{$obj} >= $loc and defined $obj->[$loc] ) )
         {
             $self->trace( $x_string, $obj->[$loc], $path . ';' . $loc );
 
@@ -394,7 +394,7 @@ sub evalx {
                     if ($sub_obj) {
                         if ( $sub_obj_type eq 'ARRAY' ) {
                             foreach my $item ( @{$sub_obj} ) {
-                                if ( looks_like_number($item) ) {
+                                if ( looks_like_number($item) && looks_like_number($query_item) ) {
                                     return 1 if $item == $query_item;
                                 }
                                 else {
@@ -415,7 +415,7 @@ sub evalx {
             else {
                 #$log->debug(" in array item evalling");
                 my $returnable = 0;
-                if ( !looks_like_number($obj) ) {
+                if ( !looks_like_number($obj) || !looks_like_number($query_item)  ) {
 
                     #Does the string include the string they've provided?
                     #return ($obj eq $query_item or $obj =~ m/.*?$query_item.*?/) ? 1 : 0;
