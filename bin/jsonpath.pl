@@ -7,7 +7,7 @@
 use strict;
 use warnings;
 use JSONPath;
-use JSON::MaybeXS;
+use JSON::MaybeXS qw/to_json from_json/;
 use Path::Tiny;
 
 if ($#ARGV < 1){
