@@ -1,10 +1,12 @@
 #!/usr/bin/perl
-#
+
+# PODNAME: jsonpath.pl
+
+# ABSTRACT: Simple script to execute JSONPath expressions against JSON files
 
 use strict;
-use lib '../lib';
 use JSONPath;
-use JSON;
+use JSON::MaybeXS;
 
 if ($#ARGV < 1){
 	die "Requires 2 arguments: <path/to/json/file> <JSONPath expression> <optional: VALUE|PATH>.\n";
