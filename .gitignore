@@ -1,3 +1,5 @@
 *.swp
 *~
 .build/
+JSONPath-*.tar.gz
+JSONPath-*/

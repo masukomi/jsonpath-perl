@@ -4,7 +4,7 @@ JSONPath - A port of the JavaScript and PHP versions of JSONPath [http://goessne
 
 # VERSION
 
-version 0.81
+version 0.82
 
 # SYNOPSIS
 
