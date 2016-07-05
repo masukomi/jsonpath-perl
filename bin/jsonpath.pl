@@ -1,10 +1,14 @@
 #!/usr/bin/perl
-#
+
+# PODNAME: jsonpath.pl
+
+# ABSTRACT: Simple script to execute JSONPath expressions against JSON files
 
 use strict;
-use lib '../lib';
+use warnings;
 use JSONPath;
-use JSON;
+use JSON::MaybeXS qw/to_json from_json/;
+use Path::Tiny;
 
 if ($#ARGV < 1){
 	die "Requires 2 arguments: <path/to/json/file> <JSONPath expression> <optional: VALUE|PATH>.\n";
@@ -12,13 +16,7 @@ if ($#ARGV < 1){
 my $expression = $ARGV[1];
 $expression =~ s/\\!/!/g;
 
-
-my $raw_json = '';
-open (ORIG, $ARGV[0]) or die "unable to open $ARGV[0] $!\n";
-while (<ORIG>){
-	$raw_json .= $_;
-}
-close(ORIG);
+my $raw_json = path($ARGV[0])->slurp_raw;
 
 my $json_structure = from_json($raw_json);
 my $jp = JSONPath->new();
