@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
 # ABSTRACT:	 A port of the JavaScript and PHP versions of JSONPath L<http://goessner.net/articles/JsonPath/>
 
 # VERSION
@@ -31,7 +33,6 @@
 #	OTHER DEALINGS IN THE SOFTWARE.
 
 package JSONPath;
-use strict;
 use JSON::MaybeXS;
 use Log::Any qw($log);
 use Scalar::Util qw(looks_like_number);
@@ -364,7 +365,7 @@ sub evalx {
                 else {
                     $loc =~ s/\$obj->{(.*?)}(.*)/"$obj" $2/;
                 }
-                return ( $obj and $loc and eval($loc) ) ? 1 : 0;
+                return ( $obj and $loc and eval($loc) ) ? 1 : 0; ## no critic
             }
         }
         elsif ( $loc =~ m/></ ) {
@@ -386,7 +387,7 @@ sub evalx {
                     #$eval_string =~ s/(.*?)><.*/\$sub_obj_type = ref $1\->{'$query_item'}/;
                     #$log->debug("eval_string: $eval_string");
                     #set the sub_obj_type
-                    eval( '$sub_obj = ' . $eval_string );
+                    eval( '$sub_obj = ' . $eval_string ); ## no critic
                     my $sub_obj_type = ref $sub_obj;
 
                     #$log->debug("sub_obj_type: $sub_obj_type");
@@ -437,7 +438,7 @@ sub evalx {
     }
 
     #print STDERR "loc: $loc\n";
-    return ( $obj and $loc and eval($loc) ) ? 1 : 0;
+    return ( $obj and $loc and eval($loc) ) ? 1 : 0; ## no critic
 }
 
 sub _callback_01 {
