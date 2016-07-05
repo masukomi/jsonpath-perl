@@ -731,7 +731,3 @@ array methods as sort with it.
 * Currently only single quotes allowed inside of JSONPath expressions.
 * Script expressions inside of JSONPath locations are currently not recursively evaluated by jsonPath. Only the global $ and local @ symbols are expanded by a simple regular expression.
 * An alternative for jsonPath to return false in case of no match may be to return an empty array in future.
-
-=head1 CPAN MAINTAINER
-
-Kit Peters <popefelix@cpan.org>
